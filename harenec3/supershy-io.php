@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 </head>
 
 <body>
-    <div class="container">
+    <div class="container wide">
         <header>
             <h1>
                 <a href="index.php" class="title">
@@ -44,13 +44,17 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             </p>
             <div id="msg-block">
             </div>
-            <textarea id="msg-text" name="bio" placeholder="Tu mozete pisat spravu..."></textarea>
-            <button disabled="true" id="send" onclick="sendMessage()">Odosli spravu!</button>
+            <textarea id="msg-text" name="bio" placeholder="Tu píšte správu..."></textarea>
+            <button disabled="true" id="btn-send">Odošli správu.</button>
         </main>
 
     </div>
-
+    <script>
+        // Accessing PHP session variable in JavaScript
+        var playerName = "<?php echo $_SESSION['nick']; ?>";
+    </script>
     <script src="js/receiver.js"></script>
+    <script type="module" src="js/game/main.js"></script>
 </body>
 
 </html>

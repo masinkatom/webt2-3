@@ -74,6 +74,10 @@ body {
     padding: 1rem;
 }
 
+.wide {
+    max-width: 125rem;
+}
+
 .main-nav {
     width: 100%;
     /* background-color: var(--webte-color-brown); */

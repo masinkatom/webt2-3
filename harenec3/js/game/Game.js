@@ -1,26 +1,26 @@
-import { EnemyBar } from "./EnemyBar.js";
 import { Player } from "./Player.js";
 
 export class Game {
-    constructor() {
-
-
+    constructor(width, height) {
+        this.width = width;
+        this.height = height;
+        this.player = new Player(this);
+        this.enemies = [];
     }
 
     // method to updatee items on canvas, called from animate every couple miliseconds
-    update(deltaTime) {
+    update() {
 
     }
 
     // method to draw items on canvas, called from animate every couple miliseconds
     draw(ctx) {
+        this.player.draw(ctx);
 
     }
 
-    handleGyro(e) {
-        // gamma: left to right
-        this.player.update(e.gamma * 0.4);
+    addEnemy() {
+        this.enemies.push(new Player(this));
     }
-
 
 }
