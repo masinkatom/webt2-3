@@ -4,7 +4,7 @@ export class Game {
     constructor(width, height) {
         this.width = width;
         this.height = height;
-        this.player = new Player(this);
+        this.player = new Player(this, "");
         this.enemies = [];
     }
 
@@ -16,11 +16,14 @@ export class Game {
     // method to draw items on canvas, called from animate every couple miliseconds
     draw(ctx) {
         this.player.draw(ctx);
+        this.enemies.forEach(enemy => {
+            enemy.draw(ctx);
+        });
 
     }
 
-    addEnemy() {
-        this.enemies.push(new Player(this));
+    addEnemy(uuid) {
+        this.enemies.push(new Player(this, uuid));
     }
 
 }

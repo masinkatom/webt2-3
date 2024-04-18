@@ -49,10 +49,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         </main>
 
     </div>
-    <script>
-        // Accessing PHP session variable in JavaScript
-        var playerName = "<?php echo $_SESSION['nick']; ?>";
-    </script>
     <script src="js/receiver.js"></script>
     <script type="module" src="js/game/main.js"></script>
 </body>

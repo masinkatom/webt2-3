@@ -1,7 +1,8 @@
+
 const nameSpan = document.getElementById('alias');
 var ws;
-// var playerName = nameSpan.innerText.trim();
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", async () => {
+    const playerName = await getNickName();
     const btnSend = document.getElementById('btn-send');
     const msgText = document.getElementById('msg-text');
 
@@ -24,9 +25,9 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     }, 20000);
 
-    ws.onopen = function (e) {
+    ws.onopen = async function (e) {
         console.log("connected");
-        sendUserConnected(playerName + ' has connected');
+        await sendUserConnected(playerName + ' has connected');
     };
 
 
@@ -62,7 +63,7 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function sendUserConnected(info) {
+    async function sendUserConnected(info) {
         message = {
             type: "connectedUser",
             payload: info,
@@ -71,4 +72,13 @@ window.addEventListener("DOMContentLoaded", () => {
         console.log("info:" + info);
         ws.send(JSON.stringify(message));
     }
+
+    async function getNickName() {
+        let uname = "tonko";
+        if (localStorage.getItem("nick") !== null) {
+            uname = localStorage.getItem("nick");
+        }
+        return uname;
+    }
 });
+

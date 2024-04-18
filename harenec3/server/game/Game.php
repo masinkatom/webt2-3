@@ -1,22 +1,26 @@
 <?php
 
-class Game {
+class Game implements JsonSerializable {
     private $width;
     private $height;
     private $ratio;
-    private $ballSpeed;
     private $players;
+    private $tickrate;
+    private $refreshTimeSeconds;
     
-    public function __construct($width, $height) {
+    public function __construct($width, $height, $tickrate) {
         $this->width = $width;
         $this->height = $height;
-        $this->ratio = 1 * ($this->width / 1000);
-        $this->ballSpeed = 3 * $this->ratio;
         $this->players = [];
+        $this->tickrate = $tickrate;
+        $this->refreshTimeSeconds = (1000 / $tickrate) / 1000;
     }
 
     public function update($mouseX, $mouseY) {
-        $this->players->update($mouseX, $mouseY);
+        foreach ($this->players as $player) {
+            $player->update($mouseX, $mouseY);
+        }
+        
     }
 
     // Getter methods
@@ -32,17 +36,48 @@ class Game {
         return $this->ratio;
     }
 
-    public function getBallSpeed() {
-        return $this->ballSpeed;
-    }
-
     public function getPlayers() {
         return $this->players;
+    }
+
+    public function getTickrate() {
+        return $this->tickrate;
+    }
+
+    public function getRefreshTimeSeconds() {
+        return $this->refreshTimeSeconds;
+    }
+
+    public function jsonSerialize() {
+        $playersData = [];
+        foreach ($this->players as $player) {
+            array_push($playersData, $player->jsonSerialize());
+            // $playersData[] = $player->jsonSerialize();
+        }
+        return [
+            'width' => $this->width,
+            'height' => $this->height,
+            'ratio' => $this->ratio,
+            'players' => $playersData
+        ];
     }
 
     // Add an enemy to the game
     public function addPlayer($player) {
         array_push($this->players, $player);
+    }
+
+    public function removePlayer($playerUuidToRemove) {
+        foreach ($this->players as $key => $player) {
+            
+            if ($player->getUuid() === $playerUuidToRemove) {
+                echo "\nremoving on key: " . $key . " :";
+                var_dump(json_encode($player));
+                array_splice($this->players, $key, 1);
+                //unset($this->players[$key]);
+                return; // Player found and removed, exit the loop
+            }
+        }
     }
 }
 

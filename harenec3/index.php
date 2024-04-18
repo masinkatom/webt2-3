@@ -26,7 +26,7 @@ session_start();
         </header>
 
         <main class="content-outline">
-            <form action="supershy-io.php" method="post">
+            <form action="supershy-io.php" method="post" onsubmit="handleFormSubmit(event)">
                 <div class="form-input">
                     <p>Zadaj svoj nickname:</p>
                     <?php
@@ -52,5 +52,13 @@ session_start();
 
     </div>
 </body>
+<script>
+    function handleFormSubmit(event) {
+        event.preventDefault(); // Prevent default form submission    
+        let nickname = document.getElementById('nickname').value.trim();
+        localStorage.setItem('nick', nickname);
+        event.target.submit();
+    }
+</script>
 
 </html>
