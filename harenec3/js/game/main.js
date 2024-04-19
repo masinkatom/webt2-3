@@ -1,6 +1,7 @@
 import { Game } from "./Game.js";
+import { Player } from "./Player.js";
 
-window.addEventListener("load", () => {
+// window.addEventListener("load", () => {
     const msgBlock = document.getElementById('msg-block');
     let canvasParent = document.getElementById("gameContain");
     let canvas = document.getElementById("canvas1");
@@ -13,7 +14,7 @@ window.addEventListener("load", () => {
     let mouseX = 0;
     let mouseY = 0;
     const ratio = 1 * (GAME_WIDTH / 1000);
-    const tickrate = 1;
+    const tickrate = 32;
     const refreshTime = 1000 / tickrate;
 
     canvas.width = GAME_WIDTH;
@@ -23,35 +24,47 @@ window.addEventListener("load", () => {
 
     function animate(currentTime) {
         ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-        game.draw(ctx);
+
+        if (game.player !== null) {
+            game.draw(ctx);
+        }
+
         requestAnimationFrame(animate);
     }
-    animate();
 
+    
+    
     function mouseHandler(e) {
         const rect = canvas.getBoundingClientRect();
         mouseX = e.clientX - rect.left;
         mouseY = e.clientY - rect.top;
     }
 
-    let connected = 0;
     ws.onmessage = function (e) {
         let data = JSON.parse(e.data);
         // console.log(data);
         if (data.type === "connectedPlayer") {
-            if (connected == 0) {
-                game.player.uuid = data.payload;
-                connected ++;
+            if (game.player === null) {
+                game.player = new Player(game, data.payload);
             }
-            if (connected != 0) {
+            else {
                 game.addEnemy(data.payload);
-                console.log("added enemy");
             }
+        }
+
+        if (data.type === "disconnectedPlayer") {
+            game.removeEnemy(data.payload);
+        }
+
+        if (data.type === "enemiesOnServer") {
+            data.payload.forEach(response => {
+                game.addEnemy(response.uuid);
+            });
         }
 
         if (data.type === "playerPosition") {
             data.payload.forEach(response => {
-                if (response.uuid === game.player.uuid) {
+                if (game.player !== null && response.uuid === game.player.uuid) {
                     let serverX = response.x * ratio;
                     let serverY = response.y * ratio;
 
@@ -64,12 +77,13 @@ window.addEventListener("load", () => {
                             let serverY = response.y * ratio;
                             enemy.update(serverX, serverY);
                         }
+                        console.log(enemy);
+                        console.log(enemy.x + " " + enemy.y);
                     });
                 }
                 
                 // console.log(response.uuid + ":" + response.x + " " + response.y);
             });
-            console.log(data);
             
         }
         if (data.type === "message") {
@@ -88,17 +102,20 @@ window.addEventListener("load", () => {
 
     function sendUserPos() {
         setInterval(() => {
-            message = {
-                type: "playerPosition",
-                payload: { x: mouseX / ratio, y: mouseY / ratio},
-                sender: game.player.uuid
-            };
-            if (ws.readyState === WebSocket.OPEN) {
-                ws.send(JSON.stringify(message));
+            if (game.player !== null) {
+                message = {
+                    type: "playerPosition",
+                    payload: { x: mouseX / ratio, y: mouseY / ratio},
+                    sender: game.player.uuid
+                };
+                if (ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify(message));
+                }
             }
         }, refreshTime);
     }
 
     sendUserPos();
+    animate();
 
-});
+// });

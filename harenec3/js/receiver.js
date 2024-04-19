@@ -1,8 +1,9 @@
 
 const nameSpan = document.getElementById('alias');
-var ws;
-window.addEventListener("DOMContentLoaded", async () => {
-    const playerName = await getNickName();
+var ws = new WebSocket("wss://node10.webte.fei.stuba.sk/wss");
+
+// window.addEventListener("DOMContentLoaded", async () => {
+    const playerName = getNickName();
     const btnSend = document.getElementById('btn-send');
     const msgText = document.getElementById('msg-text');
 
@@ -16,7 +17,6 @@ window.addEventListener("DOMContentLoaded", async () => {
         }
     });
 
-    ws = new WebSocket("wss://node10.webte.fei.stuba.sk/wss");
 
     // code to keep the connection alive
     const heartbeatInterval = setInterval(() => {
@@ -27,7 +27,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     ws.onopen = async function (e) {
         console.log("connected");
-        await sendUserConnected(playerName + ' has connected');
+        sendUserConnected(playerName + ' has connected');
     };
 
 
@@ -37,10 +37,6 @@ window.addEventListener("DOMContentLoaded", async () => {
         if (data.uuid) {
             // nameSpan.innerHTML = `@${data.uuid}`;
             username = playerName;
-        }
-        
-        if (data.type === "connectedUser") {
-            console.log(data);
         }
     };
 
@@ -80,5 +76,5 @@ window.addEventListener("DOMContentLoaded", async () => {
         }
         return uname;
     }
-});
+// });
 

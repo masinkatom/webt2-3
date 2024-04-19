@@ -10,16 +10,23 @@ require_once 'game/Player.php';
 $ws_worker = new Worker("websocket://0.0.0.0:8282");
 $ws_worker->count = 1; // 1 proces
 
-$game = new Game(1000, 500, 1);
+$game = new Game(1000, 500, 32);
 
 $ws_worker->onConnect = function($connection) use (&$game, $ws_worker){
     $uuid = uniqid();
-    $game->addPlayer(new Player($game, $uuid));
     $connection->playerID = $uuid;
-    $connection->send(prepareData("connectedPlayer", $uuid));
+
+    // if someone has connected I send him data of other players on server
+    sendDataToAll($ws_worker, "connectedPlayer", $uuid);
+    $connection->send(prepareData("enemiesOnServer", $game->getPlayers()));
+
+    $game->addPlayer(new Player($game, $uuid));
+
     $connectionAmount = count($ws_worker->connections);
+    // we add a timer to most recent player on server, so game will work correctly
     Timer::delAll();
     $connection->timerID = Timer::add($game->getRefreshTimeSeconds(), 'sendDataToAll', array($ws_worker, "playerPosition", $game->getPlayers()));
+    
     echo "Connected player with UUID:" . $uuid . "\n";
     var_dump(json_encode($game->getPlayers()));
     
@@ -28,6 +35,8 @@ $ws_worker->onConnect = function($connection) use (&$game, $ws_worker){
 // receiving data from the client
 $ws_worker->onMessage = function(TcpConnection $connection, $data) use (&$game) {
     $dataRcv = json_decode($data, true);
+
+    // if i get an update on mouse position update method is called on certain player
     if ($dataRcv["type"] === "playerPosition") {
         foreach ($game->getPlayers() as $player) {
             if (isset($connection->playerID) && $player->getUuid() == $connection->playerID) {
@@ -41,6 +50,7 @@ $ws_worker->onMessage = function(TcpConnection $connection, $data) use (&$game) 
 $ws_worker->onClose = function($connection) use (&$game, $ws_worker){
     $game->removePlayer($connection->playerID);  // Remove disconnected player from the array
 
+    // first we delete all player's timers, then we add it to an online one
     Timer::delAll();
 
     foreach ($ws_worker->connections as $conn) {
@@ -49,6 +59,7 @@ $ws_worker->onClose = function($connection) use (&$game, $ws_worker){
             break;
         }
     }
+    sendDataToAll($ws_worker, "disconnectedPlayer", $connection->playerID);
     echo "\nconnection closed\n";
     var_dump("after closed - " . json_encode($game->getPlayers()));
 };

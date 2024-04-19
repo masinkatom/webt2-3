@@ -1,8 +1,8 @@
 export class Player {
     constructor(game, uuid) {
         this.game = game;
-        this.x = this.game.width / 2;
-        this.y = this.game.height / 2;
+        this.x = 500;
+        this.y = 250;
         this.radius = (this.game.width * 0.02);
         this.color = "rgb(191, 175, 0)";
         this.uuid = uuid;
