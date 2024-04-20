@@ -3,7 +3,6 @@
 class Game implements JsonSerializable {
     private $width;
     private $height;
-    private $ratio;
     private $players;
     private $tickrate;
     private $refreshTimeSeconds;
@@ -32,10 +31,6 @@ class Game implements JsonSerializable {
         return $this->height;
     }
 
-    public function getRatio() {
-        return $this->ratio;
-    }
-
     public function getPlayers() {
         return $this->players;
     }
@@ -57,7 +52,6 @@ class Game implements JsonSerializable {
         return [
             'width' => $this->width,
             'height' => $this->height,
-            'ratio' => $this->ratio,
             'players' => $playersData
         ];
     }

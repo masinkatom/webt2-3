@@ -25,7 +25,7 @@ var ws = new WebSocket("wss://node10.webte.fei.stuba.sk/wss");
         }
     }, 20000);
 
-    ws.onopen = async function (e) {
+    ws.onopen = function (e) {
         console.log("connected");
         sendUserConnected(playerName + ' has connected');
     };
@@ -59,7 +59,7 @@ var ws = new WebSocket("wss://node10.webte.fei.stuba.sk/wss");
         }
     }
 
-    async function sendUserConnected(info) {
+    function sendUserConnected(info) {
         message = {
             type: "connectedUser",
             payload: info,
@@ -69,7 +69,7 @@ var ws = new WebSocket("wss://node10.webte.fei.stuba.sk/wss");
         ws.send(JSON.stringify(message));
     }
 
-    async function getNickName() {
+    function getNickName() {
         let uname = "tonko";
         if (localStorage.getItem("nick") !== null) {
             uname = localStorage.getItem("nick");

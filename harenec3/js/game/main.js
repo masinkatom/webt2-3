@@ -14,7 +14,7 @@ import { Player } from "./Player.js";
     let mouseX = 0;
     let mouseY = 0;
     const ratio = 1 * (GAME_WIDTH / 1000);
-    const tickrate = 32;
+    const tickrate = 4;
     const refreshTime = 1000 / tickrate;
 
     canvas.width = GAME_WIDTH;
@@ -69,6 +69,13 @@ import { Player } from "./Player.js";
                     let serverY = response.y * ratio;
 
                     game.player.update(serverX, serverY);
+                    response.lines.forEach(lineResponse => {
+                        let lineX1 = lineResponse.x1 * ratio;
+                        let lineY1 = lineResponse.y1 * ratio;
+                        let lineX2 = lineResponse.x2 * ratio;
+                        let lineY2 = lineResponse.y2 * ratio;
+                        game.player.addLine(lineX1, lineY1, lineX2, lineY2);
+                    });
                 }
                 else {
                     game.enemies.forEach(enemy => {
@@ -105,7 +112,7 @@ import { Player } from "./Player.js";
             if (game.player !== null) {
                 message = {
                     type: "playerPosition",
-                    payload: { x: mouseX / ratio, y: mouseY / ratio},
+                    payload: { x: Math.round(mouseX / ratio), y: Math.round(mouseY / ratio)},
                     sender: game.player.uuid
                 };
                 if (ws.readyState === WebSocket.OPEN) {

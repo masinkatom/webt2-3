@@ -10,7 +10,9 @@ require_once 'game/Player.php';
 $ws_worker = new Worker("websocket://0.0.0.0:8282");
 $ws_worker->count = 1; // 1 proces
 
-$game = new Game(1000, 500, 32);
+$tickrate = 4;
+
+$game = new Game(1000, 500, $tickrate);
 
 $ws_worker->onConnect = function($connection) use (&$game, $ws_worker){
     $uuid = uniqid();
@@ -22,7 +24,6 @@ $ws_worker->onConnect = function($connection) use (&$game, $ws_worker){
 
     $game->addPlayer(new Player($game, $uuid));
 
-    $connectionAmount = count($ws_worker->connections);
     // we add a timer to most recent player on server, so game will work correctly
     Timer::delAll();
     $connection->timerID = Timer::add($game->getRefreshTimeSeconds(), 'sendDataToAll', array($ws_worker, "playerPosition", $game->getPlayers()));
