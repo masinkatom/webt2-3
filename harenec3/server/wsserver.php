@@ -10,7 +10,7 @@ require_once 'game/Player.php';
 $ws_worker = new Worker("websocket://0.0.0.0:8282");
 $ws_worker->count = 1; // 1 proces
 
-$tickrate = 4;
+$tickrate = 32;
 
 $game = new Game(1000, 500, $tickrate);
 
@@ -76,7 +76,7 @@ function prepareData($type, $data) {
 function sendDataToAll($ws_worker, $type, $data) {
     // echo "\n";
     $toSend = prepareData($type, $data);
-    var_dump($toSend);
+    // var_dump($toSend);
     //echo "\n" . $toSend;
 
     foreach ($ws_worker->connections as $conn) {

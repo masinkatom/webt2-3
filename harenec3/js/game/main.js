@@ -14,7 +14,7 @@ import { Player } from "./Player.js";
     let mouseX = 0;
     let mouseY = 0;
     const ratio = 1 * (GAME_WIDTH / 1000);
-    const tickrate = 4;
+    const tickrate = 32;
     const refreshTime = 1000 / tickrate;
 
     canvas.width = GAME_WIDTH;

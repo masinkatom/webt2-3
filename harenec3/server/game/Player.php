@@ -35,7 +35,7 @@ class Player implements JsonSerializable{
         if ($mouseX != -1 && $mouseY != -1) {
             $this->prevX = $this->x;
             $this->prevY = $this->y;
-            
+
             $dx = ($mouseX - $this->x);
             $dy = ($mouseY - $this->y);
             $distance = sqrt(($dx * $dx) + ($dy * $dy));
