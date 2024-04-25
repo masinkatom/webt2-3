@@ -35,6 +35,14 @@ class Game implements JsonSerializable {
         return $this->players;
     }
 
+    public function getPlayersWLastLine() {
+        $players = [];
+        foreach ($this->players as $player) {
+            array_push($players, $player->lastLineOnly());
+        }
+        return $players;
+    }
+
     public function getTickrate() {
         return $this->tickrate;
     }

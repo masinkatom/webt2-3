@@ -8,25 +8,26 @@ class Player implements JsonSerializable{
     private $y;
     private $prevX;
     private $prevY;
-    private $radius;
     private $ballSpeed;
     private $color;
     private $uuid;
-    private $nickname;
-    private $lines;
+    public $lines;
 
     public function __construct($game, $uuid) {
         $this->game = $game;
-        $this->x = $this->game->getWidth() / 2;
-        $this->y = $this->game->getHeight() / 2;
-        $this->radius = $this->game->getWidth() * 0.02;
-        $this->ballSpeed = 2 * $this->game->getRefreshTimeSeconds() * 100;
-        $this->color = "rgb(191, 175, 0)";
+        $this->x = rand(100, 800);
+        $this->y = rand(50, 400);
+        $this->ballSpeed = 1.5 * $this->game->getRefreshTimeSeconds() * 100;
+        $this->color = "rgb(".rand(0, 255).", ".rand(0, 255).", ".rand(0, 255).")";
         $this->uuid = $uuid;
-        $this->nickname = "JOZEFINA";
         $this->lines = [];
         $this->prevX = $this->x;
         $this->prevY = $this->y;
+
+        array_push(
+            $this->lines, 
+            new Line($this->prevX, $this->prevY, $this->x, $this->y)
+        );
 
     }
 
@@ -36,8 +37,8 @@ class Player implements JsonSerializable{
             $this->prevX = $this->x;
             $this->prevY = $this->y;
 
-            $dx = ($mouseX - $this->x);
-            $dy = ($mouseY - $this->y);
+            $dx = $mouseX - $this->x;
+            $dy = $mouseY - $this->y;
             $distance = sqrt(($dx * $dx) + ($dy * $dy));
     
             // Move the player towards the cursor at a constant speed
@@ -66,7 +67,6 @@ class Player implements JsonSerializable{
         return [
             'x' => $this->x,
             'y' => $this->y,
-            'radius' => $this->radius,
             'ballSpeed' => $this->ballSpeed,
             'color' => $this->color,
             'uuid' => $this->uuid,
@@ -81,6 +81,24 @@ class Player implements JsonSerializable{
 
     public function getBallSpeed() {
         return $this->ballSpeed;
+    }
+
+    public function getLines() {
+        return $this->lines;
+    }
+
+    public function lastLineOnly() {
+        $lastLine = end($this->lines);
+
+        return [
+            'x' => $this->x,
+            'y' => $this->y,
+            'ballSpeed' => $this->ballSpeed,
+            'color' => $this->color,
+            'uuid' => $this->uuid,
+            'line' => $lastLine->jsonSerialize()
+            // Add more properties as needed
+        ];
     }
 }
 

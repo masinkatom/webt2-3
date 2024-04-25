@@ -42,6 +42,7 @@ var ws = new WebSocket("wss://node10.webte.fei.stuba.sk/wss");
 
     ws.onclose = function (e) {
         clearInterval(heartbeatInterval);
+        // location.reload();
     }
 
 

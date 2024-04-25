@@ -23,4 +23,18 @@ class Line implements JsonSerializable{
         ];
     }
 
+    public function getX1() {
+        return $this->x1;
+    }
+
+    public function getX2() {
+        return $this->x2;
+    }
+    public function getY1() {
+        return $this->y1;
+    }
+    public function getY2() {
+        return $this->y2;
+    }
+
 }

@@ -45,7 +45,7 @@ session_start();
                     </select>
                 </div>
                 <div class="form-input">
-                    <button id="start-game" type="submit">Začni hru!</button>
+                    <button id="start-game">Začni hru!</button>
                 </div>
             </form>
         </main>
@@ -57,7 +57,8 @@ session_start();
         event.preventDefault(); // Prevent default form submission    
         let nickname = document.getElementById('nickname').value.trim();
         localStorage.setItem('nick', nickname);
-        event.target.submit();
+        
+        window.location.href = './supershy-io.php';
     }
 </script>
 
